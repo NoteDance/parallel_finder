@@ -53,7 +53,7 @@ finder.find(train_ds=(x_train, y_train), batch_size=32, epochs=5)
 
 # 4) Inspect results
 print("Best loss:", finder.logs['best_loss'])
-print("Best optimizer config:", finder.logs['best_opt'].get_config())
+print("Best optimizer config:", finder.logs['best_loss_model'].optimizer.get_config())
 ```
 ```python
 from keras.models import Sequential, clone_model
@@ -88,7 +88,7 @@ finder.find(train_ds=(x_train, y_train), batch_size=32, epochs=10)
 
 # 4) Report results
 print("Best loss:", finder.logs['best_loss'])
-print("Best optimizer:", finder.logs['best_opt'].get_config()['name'])
+print("Best optimizer:", finder.logs['best_loss_model'].optimizer.get_config()['name'])
 ```
 
 This will print the smallest final loss achieved and the full configuration of the optimizer that achieved it.&#x20;
