@@ -1,4 +1,4 @@
-# ModelFinder
+# ParallelFinder
 
 ## Overview
 
@@ -37,6 +37,7 @@ Use this to bind your model, lock, and callback function into a signature that `
 ```python
 from keras.models import Sequential
 from keras.layers import Dense
+from parallel_finder import ParallelFinder
 
 # 1) Build some models with different learning rates
 models = []
@@ -46,7 +47,7 @@ for lr in [1e-2, 1e-3, 1e-4]:
     models.append(m)
 
 # 2) Instantiate ModelFinder
-finder = ModelFinder(models)
+finder = ParallelFinder(models)
 
 # 3) Run parallel training for 5 epochs on (x_train, y_train)
 finder.find(train_ds=(x_train, y_train), batch_size=32, epochs=5)
@@ -59,6 +60,7 @@ print("Best optimizer config:", finder.logs['best_loss_model'].optimizer.get_con
 from keras.models import Sequential, clone_model
 from keras.layers import Dense
 from keras.optimizers import SGD, RMSprop, Adam
+from parallel_finder import ParallelFinder
 
 # 1) Define base model architecture
 def build_base_model():
@@ -83,7 +85,7 @@ for name, opt in optimizers.items():
     models.append(m)
 
 # 3) Run ModelFinder on (x_train, y_train)
-finder = ModelFinder(models)
+finder = ParallelFinder(models)
 finder.find(train_ds=(x_train, y_train), batch_size=32, epochs=10)
 
 # 4) Report results
