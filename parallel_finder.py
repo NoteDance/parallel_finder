@@ -14,9 +14,11 @@ class ParallelFinder:
         self.logs = manager.dict()
         self.logs['best_loss'] = 1e9
         self.logs['best_time'] = 1e9
+        self.loss = manager.list()
+        self.time = manager.list()
         self.lock = multiprocessing.Lock()
     
-    class _FinderCallback(Callback):
+    class FinderCallback(Callback):
         def __init__(self, finder, model):
             super().__init__()
             self.finder = finder
@@ -31,12 +33,14 @@ class ParallelFinder:
             loss = logs['loss']
             
             if epoch+1 == self.epochs:
+                self.loss.append(loss)
+                self.time.append(model.time)
                 if loss < self.logs['best_loss']:
-                    self.logs['best_loss_model'] = self.model
+                    self.logs['best_loss_model'] = model
                     self.logs['best_loss'] = loss
                     self.logs['time'] = time_
                 if model.time < self.logs['best_time']:
-                    self.logs['best_time_model'] = self.model
+                    self.logs['best_time_model'] = model
                     self.logs['best_time'] = time_
                     self.logs['loss'] = loss
             lock.release()
@@ -46,7 +50,7 @@ class ParallelFinder:
 
         process_list=[]
         for i in range(len(self.models)):
-            callback = ModelFinder._FinderCallback(self, self.models[i])
+            callback = ParallelFinder.FinderCallback(self, self.models[i])
             process=multiprocessing.Process(target=self.models[i].fit,kwargs={
                                                     'x': train_ds,
                                                     'epochs': epochs,
