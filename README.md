@@ -95,32 +95,6 @@ A lightweight utility for training multiple Keras models in parallel and compari
 
 ---
 
-## API Summary
-
-```python
-class ParallelFinder:
-    def __init__(self, model_fn_list: List[Callable[[], keras.Model]]):
-        # model_fn_list: a list of functions that return compiled Keras models.
-        # Initializes shared logs and a lock for safe multiprocessing.
-
-    def find(self,
-             train_data,
-             train_labels,
-             epochs: int = 1,
-             batch_size: int = 32,
-             **kw_fit):
-        # Launches one process per model in model_fn_list.
-        # Each process runs model.fit(train_data, train_labels, epochs, batch_size, callbacks=[FinderCallback]).
-        # Returns None; results are in self.logs.
-```
-
-* **Important**
-
-  * Child processes share `finder.logs` via a `multiprocessing.Manager().dict()`.
-  * `FinderCallback` timestamps each epoch and, on the last epoch, writes metrics under a lock.
-
----
-
 ## Notes
 
 * **GPU Usage**: If multiple processes share a GPU, configure each model to allow memory growth (e.g., `tf.config.experimental.set_memory_growth`).
